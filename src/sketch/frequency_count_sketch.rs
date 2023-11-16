@@ -11,7 +11,7 @@ pub struct FrequencyCountSketch {
     sample_size: usize,
     block_mask: usize,
     // Access frequency container
-    table: Box<Vec<u64>>,
+    table: Vec<u64>,
     table_len: usize,
     size: usize,
     max_size: usize,
@@ -33,7 +33,7 @@ impl FrequencyCountSketch {
         Self {
             sample_size,
             block_mask: (table_len >> 3) - 1,
-            table: Box::new(vec![0; table_len]),
+            table: vec![0; table_len],
             table_len,
             size: 0,
             max_size: maximum,
@@ -70,7 +70,7 @@ impl FrequencyCountSketch {
     /// of all elements will be periodically down sampled when the observed events exceed a threshold.
     /// This process provides a frequency aging to allow expired long term entries to fade away.
     pub fn increment<E: Hash>(&mut self, e: E) {
-        let mut index:[usize;8] = [0;8];
+        let mut index:[usize; 8] = [0; 8];
         let hash_code = default_hash_code(e);
         let block_hash = self.spread(hash_code);
         let counter_hash = self.rehash(block_hash);
@@ -97,7 +97,7 @@ impl FrequencyCountSketch {
     /// Reduces every counter by half of its original value.
     pub fn reset(&mut self) {
         let mut count = 0u8;
-        for i in self.table.iter_mut() {
+        for i in &mut self.table {
             count += bit_count(*i & 0x1111111111111111);
             *i = *i >> 1 & 0x7777777777777777;
         }

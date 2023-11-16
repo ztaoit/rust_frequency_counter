@@ -24,5 +24,5 @@ fn sketch_2_benchmark(c: &mut Criterion) {
     c.bench_function("sketch2", |b| b.iter(|| test_frequency_count_sketch(100000)));
 }
 
-criterion_group!(benches, sketch_2_benchmark, sketch_1_benchmark);
+criterion_group!(benches, sketch_1_benchmark, sketch_2_benchmark);
 criterion_main!(benches);
